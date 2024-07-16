@@ -25,6 +25,7 @@ BUILD_DIR = "build"
 
 
 def check_env_flag(name: str, default: str = "") -> bool:
+    print('XONG', os.getenv(name, default).upper())
     return os.getenv(name, default).upper() in ["ON", "1", "YES", "TRUE", "Y"]
 
 
@@ -62,6 +63,7 @@ class BuildType:
             return
 
         cmake_cache_txt = os.path.join(BUILD_DIR, "CMakeCache.txt")
+        print(cmake_cache_txt)
         if os.path.isfile(cmake_cache_txt):
             # Found CMakeCache.txt. Use the build type specified in it.
             from .cmake_utils import get_cmake_cache_variables_from_file

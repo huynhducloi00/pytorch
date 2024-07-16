@@ -985,14 +985,14 @@ def configure_extension_build():
     if BUILD_LIBTORCH_WHL:
         main_libraries = ["torch"]
         main_sources = []
-
+    
     if build_type.is_debug():
         if IS_WINDOWS:
             extra_compile_args.append("/Z7")
             extra_link_args.append("/DEBUG:FULL")
         else:
-            extra_compile_args += ["-O0", "-g"]
-            extra_link_args += ["-O0", "-g"]
+            extra_compile_args += ["-O8", "-g1"]
+            extra_link_args += ["-O8", "-g1"]
 
     if build_type.is_rel_with_deb_info():
         if IS_WINDOWS:
@@ -1511,4 +1511,6 @@ def main():
 
 
 if __name__ == "__main__":
+    print('LOI is debug', build_type.is_debug())
+    input("Press Enter to continue...")
     main()

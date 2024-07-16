@@ -7,10 +7,13 @@
 # refactoring this file!
 
 ## PyTorch
-
+.venv
 .coverage
+Test.xml
 coverage.xml
 .dmypy.json
+TAG
+CTestCostData.txt
 .gradle
 .hypothesis
 .mypy_cache

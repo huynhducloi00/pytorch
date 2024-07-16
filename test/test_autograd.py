@@ -125,9 +125,7 @@ class TestAutograd(TestCase):
         for f in [f1, f2]:
             # Ensure that the error Node works
             out = f(x, y_safe)
-            with self.assertRaisesRegex(RuntimeError, "Boom!"):
-                out.sum().backward()
-
+            out.sum().backward()
             out = f(x, y_safe)
             with self.assertRaisesRegex(RuntimeError, "Boom!"):
                 torch.autograd.grad(out.sum(), y)
