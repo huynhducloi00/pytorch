@@ -1,3 +1,6 @@
+## Command;
+# python setup.py clean; rm build/CMakeCache.txt; export LD_LIBRARY_PATH=/home/ldh0033@auburn.edu/miniconda3/x86_64-conda-linux-gnu/sysroot/usr/lib64/:/home/ldh0033@auburn.edu/loi_research/extra_lib/built_ssl/lib; export CMAKE_CUDA_COMPILER='/usr/local/cuda-12.4/bin/nvcc'; export DEBUG=1; export USE_CUDA=1; export CMAKE_BUILD_PARALLEL_LEVEL=10; python setup.py install
+
 # Welcome to the PyTorch setup.py.
 # Environment variables you are probably interested in:
 #
@@ -614,6 +617,7 @@ class build_ext(setuptools.command.build_ext.build_ext):
         else:
             report("-- Not using cuDNN")
         if cmake_cache_vars["USE_CUDA"]:
+            print(f'CUDA_TOOLKIT_ROOT_DIR {cmake_cache_vars["CUDA_TOOLKIT_ROOT_DIR"]}')
             report("-- Detected CUDA at " + cmake_cache_vars["CUDA_TOOLKIT_ROOT_DIR"])
         else:
             report("-- Not using CUDA")
@@ -1512,5 +1516,4 @@ def main():
 
 if __name__ == "__main__":
     print('LOI is debug', build_type.is_debug())
-    input("Press Enter to continue...")
     main()
