@@ -995,8 +995,8 @@ def configure_extension_build():
             extra_compile_args.append("/Z7")
             extra_link_args.append("/DEBUG:FULL")
         else:
-            extra_compile_args += ["-O8", "-g1"]
-            extra_link_args += ["-O8", "-g1"]
+            extra_compile_args += ["-O0", "-g"]
+            extra_link_args += ["-O0", "-g"]
 
     if build_type.is_rel_with_deb_info():
         if IS_WINDOWS:

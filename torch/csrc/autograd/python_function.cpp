@@ -45,6 +45,7 @@
 using namespace torch;
 using namespace torch::autograd;
 using at::Tensor;
+using namespace std;
 
 PyObject* THPFunctionClass = nullptr;
 PyObject* THPGradientEdgeClass = nullptr;
@@ -144,10 +145,18 @@ auto PyNode::apply(variable_list&& inputs) -> variable_list {
   // Massage a C++ variable_list into a Python arguments tuple
   THPObjectPtr pyInputs(to_py_args(inputs, &_device_guard));
 
+  bool DEBUG=false;
   THPObjectPtr apply_fn(PyObject_GetAttrString(obj, "apply"));
   if (!apply_fn)
     throw_python_error();
+  if (DEBUG){
+    cout<<"Real call "<<apply_fn<<endl;
+    cout<<"With input "<<pyInputs.get()<<endl;
+  }
   THPObjectPtr r(PyObject_CallObject(apply_fn, pyInputs.get()));
+  if (DEBUG){
+    cout<<"Call finished "<<endl;
+  }
   if (!r)
     throw_python_error();
   ensure_tuple(r);

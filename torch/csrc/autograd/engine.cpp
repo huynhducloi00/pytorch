@@ -47,7 +47,7 @@
 #include <thread>
 #include <unordered_set>
 #include <utility>
-
+using namespace std;
 namespace torch::autograd {
 
 namespace {
@@ -489,6 +489,15 @@ std::vector<Node*> get_current_graph_task_execution_order() {
   return out;
 }
 
+void display( const std::unordered_set<Node*>& container)
+{
+    for ( const auto &value : container )
+    {
+        cout <<value<<":"<< value->name() << ";";
+    }
+    cout<<endl;
+}
+
 // NOTE: graph_tasks do not necessarily form a stack. Imagine this
 // case:
 //
@@ -529,6 +538,10 @@ auto Engine::thread_main(const std::shared_ptr<GraphTask>& graph_task) -> void {
   // local_ready_queue should already been initialized when we get into
   // thread_main
   TORCH_INTERNAL_ASSERT(local_ready_queue != nullptr);
+  bool DEBUG=false;
+  if (DEBUG){
+    cout<<"Thread call =============="<<endl;
+  }
   while (graph_task == nullptr || !graph_task->future_result_->completed()) {
     // local_graph_task represents the graph_task we retrieve from the queue.
     // The outer graph_task represents the overall graph_task we need to execute
@@ -555,6 +568,18 @@ auto Engine::thread_main(const std::shared_ptr<GraphTask>& graph_task) -> void {
 
       set_device(worker_device);
 
+      if (DEBUG){
+        cout<<"start =============="<<endl;
+        cout<< "LOI has error " << local_graph_task->has_error_.load()<<endl;
+        if (task.fn_){
+          cout<< "LOI parent: "<<task.fn_<<" "<<task.fn_->name()<<endl;
+        } else{
+          cout<< "LOI parent: task no reference"<<endl;
+        }
+        cout<< "It has "<<local_graph_task->nodes_in_graph_.size()<<endl;
+        display(local_graph_task->nodes_in_graph_);
+        cout<<"end =============="<<endl;
+      }
       if (task.fn_ && !local_graph_task->has_error_.load()) {
         // Set the ThreadLocalState before calling the function.
         // NB: The ThreadLocalStateGuard doesn't set the grad_mode because
@@ -571,6 +596,9 @@ auto Engine::thread_main(const std::shared_ptr<GraphTask>& graph_task) -> void {
           GraphTaskGuard guard(local_graph_task);
           NodeGuard ndguard(task.fn_);
           {
+            if (DEBUG){
+              cout<<"autograd::engine::evaluate_function: "<<task.fn_.get()<<":"<<task.fn_.get()->name()<<endl;
+            }
             RECORD_FUNCTION(
                 c10::str(
                     "autograd::engine::evaluate_function: ",
@@ -612,6 +640,9 @@ auto Engine::thread_main(const std::shared_ptr<GraphTask>& graph_task) -> void {
             ->push(NodeTask(local_graph_task, nullptr, InputBuffer(0)));
       }
     }
+  }
+  if (DEBUG){
+    cout<<"Thread FINISH =============="<<endl;
   }
 }
 
